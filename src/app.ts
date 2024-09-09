@@ -32,7 +32,8 @@ class ProjectInput{
         console.log(this.titleInputElement.value);
     }
     private configure(){
-        this.element.addEventListener('submit', this.submitHandler)
+        //se agrega el elemento bind en el cual, se agrega  el contexto, para que no se pierda, el contexto de la accion
+        this.element.addEventListener('submit', this.submitHandler.bind(this));
     }
 }
 
