@@ -17,6 +17,10 @@
     "live-server": "^1.2.2"
   },
   "devDependencies": {
+    "chokidar": "^3.6.0",
     "lite-server": "^2.6.1"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.3"
   }
 }
