@@ -2,13 +2,21 @@
   "name": "micro-boot",
   "version": "1.0.0",
   "description": "proyecto de typescript con consumo de servicios web en spring boot",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "lite-server"
   },
+  "keywords": [
+    "typescript",
+    "course"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "live-server": "^1.2.2"
+  },
+  "devDependencies": {
+    "lite-server": "^2.6.1"
   }
 }
