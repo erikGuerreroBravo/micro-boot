@@ -1,6 +1,7 @@
 ///Manejo del estado del proyeco: Management State
 ///se crea un patronn de diseño del tipo singleton
 class ProjectState{
+    private listeners: any[] = [];
     private projects: any[] = [];
     private static instance: ProjectState;
 
@@ -24,7 +25,18 @@ class ProjectState{
         };
         //agrgeamos al arreglo de proyectos  el nuevo objeto.
         this.projects.push(newProject);
+        for(const listeneerFn of this.listeners)
+        {
+            ///retornamos una copìa del arreglo original por cada vez que se invoque la funcion
+             listeneerFn(this.projects.slice());
+        }
     }
+
+    addListener(listenerFn: Function){
+        this.listeners.push(listenerFn);
+    }
+
+
 }
 
 //creamos una constante global para poder ser utilizada  en cualquier parte dell proyecto.
@@ -79,15 +91,25 @@ class ProjectList{
     templateElement: HTMLTemplateElement;
     hostElement: HTMLDivElement;
     element:HTMLElement;
+    assignedProjects: any[];
 
     //en el constructor pasamos dos tipos de parametros  activos y terminados para la lista de proyectos
     constructor(private  type: 'active'| 'finished'){
         this.templateElement = <HTMLTemplateElement> document.getElementById('project-list')! as HTMLTemplateElement;
         this.hostElement =<HTMLElement>document.getElementById('app')! as HTMLDivElement;
+
+        this.assignedProjects =[];
          //Este metodo se encarga de  modificar o renderizar desde typescript  el node del doom
          const importedNode = document.importNode(this.templateElement.content,true);
          this.element = importedNode.firstElementChild as HTMLFormElement;
          this.element.id=`${this.type}-projects`;
+         ///recibo una funcion 
+         projectState.addListener( (projects: any[] ) => {
+            this.assignedProjects = projects;
+            this.renderProjects();
+         });
+
+
          this.attach();
          this.renderContent();
 
@@ -102,6 +124,19 @@ class ProjectList{
         //se encarga de insertar un nodo de acuerdo a la posicion especifica en la cual se agrega dicho nodo.
         this.hostElement.insertAdjacentElement('beforeend',this.element);
     }
+
+    private renderProjects(){
+        const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
+        for(const prjItem of this.assignedProjects){
+            const listItem = document.createElement('li');
+            listItem.textContent =prjItem.title; 
+            listEl.appendChild(listItem);
+        }
+
+    }
+
+
+
 }
 
 
