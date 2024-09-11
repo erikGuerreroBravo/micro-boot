@@ -1,3 +1,35 @@
+///Manejo del estado del proyeco: Management State
+///se crea un patronn de diseño del tipo singleton
+class ProjectState{
+    private projects: any[] = [];
+    private static instance: ProjectState;
+
+    private constructor(){}
+    
+    static getInstance(){
+        if(this.instance){
+            return this.instance;
+        }
+        this.instance = new ProjectState();
+        return this.instance;
+    }
+
+
+    addProject(title: string, description: string, numOfPeople:number){
+        const newProject ={
+            id:Math.random().toString(),
+            title: title,
+            description: description,
+            numOfPeople:numOfPeople
+        };
+        //agrgeamos al arreglo de proyectos  el nuevo objeto.
+        this.projects.push(newProject);
+    }
+}
+
+//creamos una constante global para poder ser utilizada  en cualquier parte dell proyecto.
+const projectState = ProjectState.getInstance();
+
 //Validacion
 interface Validatable{
 
