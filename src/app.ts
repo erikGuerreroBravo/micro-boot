@@ -42,6 +42,36 @@ function autobind(_: any, _2: string, descriptor: PropertyDescriptor){
     };
     return adjDescriptor;
 }
+//creamos una clase para renderizar los elementos de la lista
+class ProjectList{
+    templateElement: HTMLTemplateElement;
+    hostElement: HTMLDivElement;
+    element:HTMLElement;
+
+    //en el constructor pasamos dos tipos de parametros  activos y terminados para la lista de proyectos
+    constructor(private  type: 'active'| 'finished'){
+        this.templateElement = <HTMLTemplateElement> document.getElementById('project-list')! as HTMLTemplateElement;
+        this.hostElement =<HTMLElement>document.getElementById('app')! as HTMLDivElement;
+         //Este metodo se encarga de  modificar o renderizar desde typescript  el node del doom
+         const importedNode = document.importNode(this.templateElement.content,true);
+         this.element = importedNode.firstElementChild as HTMLFormElement;
+         this.element.id=`${this.type}-projects`;
+         this.attach();
+         this.renderContent();
+
+    }
+    private renderContent(){
+        const listId = `${this.type}-projects-list`;
+        this.element.querySelector('ul')!.id=listId;
+        this.element.querySelector('h2')!.textContent =this.type.toUpperCase() + 'PROJECTS';
+    }
+    private attach()
+    {
+        //se encarga de insertar un nodo de acuerdo a la posicion especifica en la cual se agrega dicho nodo.
+        this.hostElement.insertAdjacentElement('beforeend',this.element);
+    }
+}
+
 
 class ProjectInput{
     
@@ -128,3 +158,5 @@ class ProjectInput{
 }
 
 const prjInput = new ProjectInput();
+const activePrjList = new ProjectList('active');
+const finishPrjList = new ProjectList('finished');
