@@ -1,8 +1,23 @@
+enum ProjectStatus{
+    Active,Finished
+
+}
+/// creamos la clase project
+class Project{
+    constructor(public id: string, public title:string,public description:string, public people: number,public status: ProjectStatus){
+
+    }
+}
+///agregamos los oyentes
+type Listener = (items: Project[] ) => void;
+
+
+
 ///Manejo del estado del proyeco: Management State
 ///se crea un patronn de diseño del tipo singleton
 class ProjectState{
-    private listeners: any[] = [];
-    private projects: any[] = [];
+    private listeners: Listener[] = [];
+    private projects: Project[] = [];
     private static instance: ProjectState;
 
     private constructor(){}
@@ -15,14 +30,15 @@ class ProjectState{
         return this.instance;
     }
 
-
+   //metodo que se encarga de agregar objetos del tipo newProject al arreglo original projects
     addProject(title: string, description: string, numOfPeople:number){
-        const newProject ={
+        const newProject =new Project(Math.random.toString(),title,description,numOfPeople,ProjectStatus.Active);
+         /*{
             id:Math.random().toString(),
             title: title,
             description: description,
             numOfPeople:numOfPeople
-        };
+        };*/
         //agrgeamos al arreglo de proyectos  el nuevo objeto.
         this.projects.push(newProject);
         for(const listeneerFn of this.listeners)
@@ -32,7 +48,7 @@ class ProjectState{
         }
     }
 
-    addListener(listenerFn: Function){
+    addListener(listenerFn: Listener){
         this.listeners.push(listenerFn);
     }
 
@@ -91,7 +107,7 @@ class ProjectList{
     templateElement: HTMLTemplateElement;
     hostElement: HTMLDivElement;
     element:HTMLElement;
-    assignedProjects: any[];
+    assignedProjects: Project[];
 
     //en el constructor pasamos dos tipos de parametros  activos y terminados para la lista de proyectos
     constructor(private  type: 'active'| 'finished'){
@@ -104,7 +120,7 @@ class ProjectList{
          this.element = importedNode.firstElementChild as HTMLFormElement;
          this.element.id=`${this.type}-projects`;
          ///recibo una funcion 
-         projectState.addListener( (projects: any[] ) => {
+         projectState.addListener( (projects: Project[] ) => {
             this.assignedProjects = projects;
             this.renderProjects();
          });
