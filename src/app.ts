@@ -121,7 +121,17 @@ class ProjectList{
          this.element.id=`${this.type}-projects`;
          ///recibo una funcion 
          projectState.addListener( (projects: Project[] ) => {
-            this.assignedProjects = projects;
+            //creamos un filtro para trabajar con los proyectos.
+            //este metodo se encarga a traves de una llamada de callback generar mediante una lambda un filtro de un array
+            const relevantProojects = projects.filter(p =>  {
+                if(this.type === 'active')
+                {
+                    return p.status === ProjectStatus.Active;
+                }
+                return p.status === ProjectStatus.Finished;
+            });
+            //asiganmos el filtro nuevo con los proyectos.
+            this.assignedProjects = relevantProojects;
             this.renderProjects();
          });
 
@@ -143,6 +153,7 @@ class ProjectList{
 
     private renderProjects(){
         const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
+        listEl.innerHTML ='';
         for(const prjItem of this.assignedProjects){
             const listItem = document.createElement('li');
             listItem.textContent =prjItem.title; 
