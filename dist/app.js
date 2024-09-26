@@ -73,6 +73,8 @@ function autobind(_, _2, descriptor) {
     };
     return adjDescriptor;
 }
+class Component {
+}
 class ProjectList {
     constructor(type) {
         this.type = type;

@@ -102,6 +102,46 @@ function autobind(_: any, _2: string, descriptor: PropertyDescriptor){
     };
     return adjDescriptor;
 }
+
+
+//Agregamos un componente base para reutilizar el codigo generado
+abstract class Component<T extends HTMLElement, U extends HTMLElement>
+{
+    templateElement: HTMLTemplateElement;
+    hostElement: T;
+    element: U;
+
+   constructor(templateId: string, hostElementId: string , insertAtStart: boolean ,newElement?: string)
+   {
+        this.templateElement = <HTMLTemplateElement> document.getElementById('project-list')! as HTMLTemplateElement;
+        //vamos a utilizar el elemento T explicando que T es un elemento del tipo HTMLElement
+        this.hostElement =<HTMLElement>document.getElementById(hostElementId)! as T;
+        
+        const importedNode = document.importNode(this.templateElement.content,true);
+         this.element = importedNode.firstElementChild as U;
+         if(newElement)
+         {
+            this.element.id= newElement;
+         }
+         this.attach(insertAtStart);
+   }
+   private attach(insertAtStartBegining: boolean)
+    {
+        //se encarga de insertar un nodo de acuerdo a la posicion especifica en la cual se agrega dicho nodo.
+        this.hostElement.insertAdjacentElement(insertAtStartBegining ? 'afterbegin' : 'beforeend',this.element);
+    }
+
+   //configuramos los elementos exctras necesarios para la clase
+   abstract configure(): void;
+   abstract renderContent(): void;
+
+}
+
+
+
+
+
+
 //creamos una clase para renderizar los elementos de la lista
 class ProjectList{
     templateElement: HTMLTemplateElement;
@@ -119,6 +159,8 @@ class ProjectList{
          const importedNode = document.importNode(this.templateElement.content,true);
          this.element = importedNode.firstElementChild as HTMLFormElement;
          this.element.id=`${this.type}-projects`;
+
+
          ///recibo una funcion 
          projectState.addListener( (projects: Project[] ) => {
             //creamos un filtro para trabajar con los proyectos.
