@@ -9,18 +9,29 @@ class Project{
     }
 }
 ///agregamos los oyentes
-type Listener = (items: Project[] ) => void;
+//type Listener = (items: Project[] ) => void;
 
+type Listener<T> = (items: T[]) => void;
 
+//manejamos el estado de la aplicacion de forma generica
+class State<T>{
+    protected listeners: Listener<T>[] = [];
+    addListener(listenerFn: Listener<T>){
+        this.listeners.push(listenerFn);
+    }
+
+}
 
 ///Manejo del estado del proyeco: Management State
 ///se crea un patronn de diseño del tipo singleton
-class ProjectState{
-    private listeners: Listener[] = [];
+class ProjectState extends State<Project>{
+   
     private projects: Project[] = [];
     private static instance: ProjectState;
 
-    private constructor(){}
+    private constructor(){
+        super();
+    }
     
     static getInstance(){
         if(this.instance){
@@ -48,9 +59,7 @@ class ProjectState{
         }
     }
 
-    addListener(listenerFn: Listener){
-        this.listeners.push(listenerFn);
-    }
+   
 
 
 }
@@ -124,6 +133,11 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement>
             this.element.id= newElement;
          }
          this.attach(insertAtStart);
+   
+        //mandamos raer  los metodos asignados
+        this.renderContent();
+        this.configure();
+
    }
    private attach(insertAtStartBegining: boolean)
     {
@@ -138,31 +152,35 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement>
 }
 
 
-
-
-
-
 //creamos una clase para renderizar los elementos de la lista
-class ProjectList{
-    templateElement: HTMLTemplateElement;
-    hostElement: HTMLDivElement;
-    element:HTMLElement;
+//ahora heredamos todos los elementos necesarios dentro de nuestro aplicativo de clase abstracta
+class ProjectList  extends Component<HTMLDivElement, HTMLElement>{
+    //templateElement: HTMLTemplateElement;
+    //hostElement: HTMLDivElement;
+    //element:HTMLElement;
     assignedProjects: Project[];
 
     //en el constructor pasamos dos tipos de parametros  activos y terminados para la lista de proyectos
     constructor(private  type: 'active'| 'finished'){
-        this.templateElement = <HTMLTemplateElement> document.getElementById('project-list')! as HTMLTemplateElement;
-        this.hostElement =<HTMLElement>document.getElementById('app')! as HTMLDivElement;
+        //mandamos llamar nuestra clase base a traves del elemento super
+        super('project-list','app',false,`${type}-projects`);
+
+        //this.templateElement = <HTMLTemplateElement> document.getElementById('project-list')! as HTMLTemplateElement;
+        //this.hostElement =<HTMLElement>document.getElementById('app')! as HTMLDivElement;
 
         this.assignedProjects =[];
          //Este metodo se encarga de  modificar o renderizar desde typescript  el node del doom
-         const importedNode = document.importNode(this.templateElement.content,true);
-         this.element = importedNode.firstElementChild as HTMLFormElement;
-         this.element.id=`${this.type}-projects`;
+         //const importedNode = document.importNode(this.templateElement.content,true);
+         //this.element = importedNode.firstElementChild as HTMLFormElement;
+         //this.element.id=`${this.type}-projects`;
+         this.configure();
+         //this.attach();
+         this.renderContent();
 
-
-         ///recibo una funcion 
-         projectState.addListener( (projects: Project[] ) => {
+    }
+    configure(): void {
+        ///recibo una funcion 
+        projectState.addListener( (projects: Project[] ) => {
             //creamos un filtro para trabajar con los proyectos.
             //este metodo se encarga a traves de una llamada de callback generar mediante una lambda un filtro de un array
             const relevantProojects = projects.filter(p =>  {
@@ -176,24 +194,22 @@ class ProjectList{
             this.assignedProjects = relevantProojects;
             this.renderProjects();
          });
-
-
-         this.attach();
-         this.renderContent();
-
     }
-    private renderContent(){
+
+    renderContent(){
         const listId = `${this.type}-projects-list`;
         this.element.querySelector('ul')!.id=listId;
         this.element.querySelector('h2')!.textContent =this.type.toUpperCase() + 'PROJECTS';
     }
-    private attach()
+    
+   
+    /*private attach()
     {
         //se encarga de insertar un nodo de acuerdo a la posicion especifica en la cual se agrega dicho nodo.
         this.hostElement.insertAdjacentElement('beforeend',this.element);
-    }
+    }*/
 
-    private renderProjects(){
+    renderProjects(){
         const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
         listEl.innerHTML ='';
         for(const prjItem of this.assignedProjects){
@@ -209,31 +225,41 @@ class ProjectList{
 }
 
 
-class ProjectInput{
+class ProjectInput extends Component<HTMLDivElement, HTMLFormElement>{
     
-    templateElement: HTMLTemplateElement;
-    hostElement: HTMLDivElement;
-    element: HTMLFormElement;
+    //templateElement: HTMLTemplateElement;
+    //hostElement: HTMLDivElement;
+    //element: HTMLFormElement;
     //representa la instacia d eun elemento con el cual vams a interactuar con el foormulario de html
     titleInputElement: HTMLInputElement;
     descriptionInputElement:HTMLInputElement;
     peopleInputElement: HTMLInputElement;
 
     constructor(){
-        this.templateElement = <HTMLTemplateElement>document.getElementById('project-input')!;
+        super('project-input','app', true, 'user-input');
+        this.titleInputElement = this.element.querySelector('#title') as HTMLInputElement;
+        this.descriptionInputElement = this.element.querySelector('#description') as HTMLInputElement;
+        this.peopleInputElement = this.element.querySelector('#people') as HTMLInputElement;
+        /*this.templateElement = <HTMLTemplateElement>document.getElementById('project-input')!;
         this.hostElement = <HTMLDivElement>document.getElementById('app')!;
         //Este metodo se encarga de  modificar o renderizar desde typescript  el node del doom
         const importedNode = document.importNode(this.templateElement.content,true);
         this.element = importedNode.firstElementChild as HTMLFormElement;
-        this.element.id='user-input';
-
-        this.titleInputElement = this.element.querySelector('#title') as HTMLInputElement;
-        this.descriptionInputElement = this.element.querySelector('#description') as HTMLInputElement;
-        this.peopleInputElement = this.element.querySelector('#people') as HTMLInputElement;
+        this.element.id='user-input';*/
+        
         //este metodo es el evento de escucha
         this.configure();
         //adjuntamos todos los elementos dentro del hijo del nodo de html
-        this.attach();
+        //this.attach();
+    }
+
+    configure(){
+        
+        //se agrega el elemento bind en el cual, se agrega  el contexto, para que no se pierda, el contexto de la accion
+        this.element.addEventListener('submit', this.submitHandler);
+    }
+    renderContent(): void {
+        
     }
     ///metodo que se encarga  de limpiar los campos del form
     private clearFields(){
@@ -271,10 +297,11 @@ class ProjectInput{
         }
     }
 
-    private attach(){
+    /*private attach(){
         //se encarga de insertar un nodo de acuerdo a la posicion especifica en la cual se agrega dicho nodo.
         this.hostElement.insertAdjacentElement('afterbegin',this.element);
-    }
+    }*/
+
    //generamos el evento  manejador de forma privada
    @autobind 
    private submitHandler(event:Event){
@@ -287,10 +314,7 @@ class ProjectInput{
             this.clearFields();
         }
     }
-    private configure(){
-        //se agrega el elemento bind en el cual, se agrega  el contexto, para que no se pierda, el contexto de la accion
-        this.element.addEventListener('submit', this.submitHandler.bind);
-    }
+    
 }
 
 const prjInput = new ProjectInput();
