@@ -151,6 +151,25 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement>
 
 }
 
+//creamos el componente de la lista
+class ProjectItem extends Component<HTMLUListElement, HTMLLIElement>{
+   
+   private project: Project;
+   
+   constructor(hostId: string, project: Project){
+       super('single-project',hostId,false,project.id);
+       this.project = project;
+       this.configure();
+       this.renderContent();
+}
+configure(): void {
+    
+}
+renderContent(): void {
+    
+}
+
+}
 
 //creamos una clase para renderizar los elementos de la lista
 //ahora heredamos todos los elementos necesarios dentro de nuestro aplicativo de clase abstracta
