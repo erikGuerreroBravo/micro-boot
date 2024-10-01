@@ -156,6 +156,18 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement>{
    
    private project: Project;
    
+   //los metodos setter y getter se activan de forma automatica cuando  se  manda llamar la propiedad adecuada.
+   //recordando que la clase project contiene una propiedad que se llama people y esta es de tipo numerico
+   get persons(){
+        if(this.project.people ===1)
+        {
+            return '1 persona';
+        }
+        else{
+            return `${this.project.people} personas`;
+        }
+   }
+
    constructor(hostId: string, project: Project){
        super('single-project',hostId,false,project.id);
        this.project = project;
@@ -167,7 +179,7 @@ configure(): void {
 }
 renderContent(): void {
     this.element.querySelector('h2')!.textContent = this.project.title;
-    this.element.querySelector('h3')!.textContent = this.project.people.toString();
+    this.element.querySelector('h3')!.textContent = this.persons;
     this.element.querySelector('p')!.textContent = this.project.description;
 }
 
