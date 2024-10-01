@@ -1,3 +1,17 @@
+///Construimos las interfaces necesarias para utilizar el Drag and Drop
+//Drag  Interface
+interface Draggable{
+    //expezamos  el listener que se encarga de manejar los elementos de escucha para el arrastrar y soltar
+    dragStartHandler(event: DragEvent):void;
+    //el listener que escucha cuando termina el proceso de soltar el elemento
+    dragEndHandler(event: DragEvent):void;
+}
+interface DragTarget{
+
+}
+
+
+
 enum ProjectStatus{
     Active,Finished
 
