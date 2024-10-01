@@ -7,7 +7,12 @@ interface Draggable{
     dragEndHandler(event: DragEvent):void;
 }
 interface DragTarget{
-
+    //este elemento de escucha se utiliza para identificar la superficie objetivo para saber si es  valido para soltar el elemento
+    dragOverHandler(event: DragEvent):void;
+    // este elemento de escucha se utiliza cuando el usuario actualiza los datos o smplemente suelta el elemento a redibujar
+    dropHandler(event: DragEvent):void;
+    //este elemento de esucha se utiliza cuando el elemento de arrastrar esta lejso del oobjetiv o el usuario lo cancela.
+    dragLeaveHandler(event: DragEvent):void;
 }
 
 
