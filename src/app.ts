@@ -1,5 +1,5 @@
 /// <reference path="drag-drop-intyerfacers.ts" />
-
+/// <reference path="project-model.ts" />
 
 namespace App{ 
 ///agregamos los oyentes
