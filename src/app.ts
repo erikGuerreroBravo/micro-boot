@@ -71,14 +71,31 @@ class ProjectState extends State<Project>{
         };*/
         //agrgeamos al arreglo de proyectos  el nuevo objeto.
         this.projects.push(newProject);
-        for(const listeneerFn of this.listeners)
-        {
+        //for(const listeneerFn of this.listeners)
+        //{
             ///retornamos una copìa del arreglo original por cada vez que se invoque la funcion
-             listeneerFn(this.projects.slice());
+            /// listeneerFn(this.projects.slice());
+        //}
+        this.updateListeners();
+    }
+   
+    ///este metodo se va a encargar de mover el estado del proyecto a otro status
+    moveProject(projectId: string , newStatus: ProjectStatus)
+    {
+        const project = this.projects.find(p=> p.id === projectId);
+        if(project){
+            if(project && project.status !== newStatus){
+                project.status = newStatus;
+                this.updateListeners();
+            }
         }
     }
-
    
+    private updateListeners(){
+        for(const listenerFn of this.listeners){
+            listenerFn(this.projects.slice());
+        }
+    }
 
 
 }
@@ -197,7 +214,11 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
    //nos ayuda a construir elementos mas arrastrables  de manera uniforme
    @autobind  ///agregamos el elemento del tipo binding
    dragStartHandler(event: DragEvent): void {
-       console.log(event);
+      //transferimos los datos desde el drag and drop  en formato de texto plano
+      //transferimos el identofocador del proyecto para saber con que elemento se esta trabajando
+       event.dataTransfer!.setData('text/plain', this.project.id);
+       ///generamos el efecto de movimiento del archivo para permitir que se sobreponga el nuevo dato a agregar
+       event.dataTransfer!.effectAllowed ='move';
    }
    dragEndHandler(_: DragEvent): void {
        console.log('DragEnd');
@@ -220,7 +241,8 @@ renderContent(): void {
 
 //creamos una clase para renderizar los elementos de la lista
 //ahora heredamos todos los elementos necesarios dentro de nuestro aplicativo de clase abstracta
-class ProjectList  extends Component<HTMLDivElement, HTMLElement>{
+class ProjectList  extends Component<HTMLDivElement, HTMLElement> implements DragTarget
+{
     //templateElement: HTMLTemplateElement;
     //hostElement: HTMLDivElement;
     //element:HTMLElement;
@@ -244,7 +266,37 @@ class ProjectList  extends Component<HTMLDivElement, HTMLElement>{
          this.renderContent();
 
     }
+     //establcemos los metodos necesarios para trabajar con Drag and Drop
+     @autobind
+     dragOverHandler(event: DragEvent){
+        //especificamos que los elementos necesarios se transfieran en formato de texto plano
+        if(event.dataTransfer && event.dataTransfer.types[0] === 'text/plain'){
+            event.preventDefault();
+            const listEl = this.element.querySelector('ul')!;
+            listEl.classList.add('droppable');
+        }
+        
+     }
+     @autobind
+     dropHandler(event: DragEvent)
+     {
+        console.log(event.dataTransfer!.getData('text/plain'));
+        const prjId= event.dataTransfer!.getData('text/plain');
+        projectState.moveProject(prjId,this.type=== 'active' ? ProjectStatus.Active :ProjectStatus.Finished);
+     }
+
+
+     dragLeaveHandler(_: DragEvent){
+        const listEl = this.element.querySelector('ul')!;
+        listEl.classList.remove('droppable');
+     }
+
     configure(): void {
+
+        this.element.addEventListener('dragover', this.dragOverHandler);
+        this.element.addEventListener('dragleave', this.dragLeaveHandler);
+        this.element.addEventListener('drop', this.dropHandler);
+
         ///recibo una funcion 
         projectState.addListener( (projects: Project[] ) => {
             //creamos un filtro para trabajar con los proyectos.
