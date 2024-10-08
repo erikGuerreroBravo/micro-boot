@@ -2,6 +2,8 @@
 /// <reference path="project-model.ts" />
 /// <reference path="project-state.ts" />
 /// <reference path="validation.ts" />
+/// <reference path=" autobind.ts" />
+
 
 namespace App{ 
 
