@@ -1,4 +1,7 @@
-namespace App{
+
+
+
+//namespace App{
 
 
 export enum ProjectStatus{
@@ -12,4 +15,4 @@ export class Project{
     }
 }
 
-}
+//}

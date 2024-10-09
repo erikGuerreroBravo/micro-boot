@@ -1,4 +1,4 @@
-namespace App{
+//namespace App{
     //agregamos el decorador
 export function autobind(_: any, _2: string, descriptor: PropertyDescriptor){
     
@@ -14,4 +14,4 @@ export function autobind(_: any, _2: string, descriptor: PropertyDescriptor){
     return adjDescriptor;
 }
 
-}
+//}

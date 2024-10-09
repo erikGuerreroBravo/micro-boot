@@ -1,5 +1,7 @@
 
-namespace App{
+
+
+//namespace App{
 
     //Validacion
 export interface Validatable{
@@ -32,4 +34,4 @@ export function validate( validatableInput: Validatable){
     return isValid;
 }
 
-}
+//}

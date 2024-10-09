@@ -1,5 +1,6 @@
 
-namespace App{
+
+//namespace App{
 
     //Agregamos un componente base para reutilizar el codigo generado
 export abstract class Component<T extends HTMLElement, U extends HTMLElement>
@@ -10,7 +11,7 @@ export abstract class Component<T extends HTMLElement, U extends HTMLElement>
 
    constructor(templateId: string, hostElementId: string , insertAtStart: boolean ,newElement?: string)
    {
-        this.templateElement = <HTMLTemplateElement> document.getElementById('project-list')! as HTMLTemplateElement;
+        this.templateElement = <HTMLTemplateElement> document.getElementById(templateId)! as HTMLTemplateElement;
         //vamos a utilizar el elemento T explicando que T es un elemento del tipo HTMLElement
         this.hostElement =<HTMLElement>document.getElementById(hostElementId)! as T;
         
@@ -38,4 +39,4 @@ export abstract class Component<T extends HTMLElement, U extends HTMLElement>
    abstract renderContent(): void;
 
  }
-}
+//}

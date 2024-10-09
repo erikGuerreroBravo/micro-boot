@@ -1,4 +1,4 @@
-namespace App{
+//namespace App{
 
 ///Construimos las interfaces necesarias para utilizar el Drag and Drop
 //Drag  Interface
@@ -19,7 +19,7 @@ export interface DragTarget{
 
 
 
-}
+//}
 
 
 

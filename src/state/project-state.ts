@@ -1,5 +1,7 @@
 
-namespace App{
+import { Project, ProjectStatus } from "../models/project.js";
+
+//namespace App{
 
 ///agregamos los oyentes
 //type Listener = (items: Project[] ) => void;
@@ -75,4 +77,4 @@ export class ProjectState extends State<Project>{
 }
 //creamos una constante global para poder ser utilizada  en cualquier parte dell proyecto.
 export const projectState = ProjectState.getInstance();
-}
+//}
