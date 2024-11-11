@@ -4,9 +4,9 @@
 /// *<reference path="../state/project-state.ts" />
 
 //namespace App{
-import { Component } from "./base-component.js";
-import { Validatable,validate } from "../util/validation.js";
-import { autobind } from "../decorators/autobind.js";
+import { Component } from "./base-component";
+import { Validatable,validate } from "../util/validation";
+import { autobind } from "../decorators/autobind";
 
 export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement>{
     
