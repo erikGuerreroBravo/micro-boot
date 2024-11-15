@@ -1,6 +1,7 @@
 /**utilizamos la variable const para poder tener salida al archivo de salida correcto */
 const path= require('path');
 const { devtools } = require('vue');
+const CleanPlugin = require('clean-webpack-plugin');
 
 module.exports = {
     /**mejora en forma de mostrar los errores , en este modo de desarrollador */
@@ -16,7 +17,7 @@ module.exports = {
         /**establecems la carpeta de salida */
         publicPath: '/dist/'
     },
-    devtool: 'inline-source-map',
+    devtool: 'none',
     devServer: {
         static: [
           {
@@ -43,5 +44,10 @@ module.exports = {
         /**webpack lo utiliza para buscar todas las extensiones y solo agrupa por ts y js, es decir lo empieza a empaquetar*/
         extensions:['.ts','.js']
         /**recuerda que en el archivo de configuracion de typescrip es necesario establecer el sourceMap en true */
-    }
-}
+    },
+    plugins: [
+      new CleanPlugin.CleanWebpackPlugin()
+    ]
+
+    
+};
